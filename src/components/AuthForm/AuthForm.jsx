@@ -13,7 +13,7 @@ const AuthForm = () => {
 				<VStack spacing={4}>
 					<Image src='/logo.png' h={24} cursor={"pointer"} alt='Instagram' />
 
-					{isLogin ? <Login /> : <Signup />}
+					{isLogin ? <Login /> : <Signup setLogin = { () => {setIsLogin(true)}} />}
 
 					{/* ---------------- OR -------------- */}
 					<Flex alignItems={"center"} justifyContent={"center"} my={4} gap={1} w={"full"}>

@@ -1,33 +1,44 @@
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import useShowToast from "./useShowToast";
-import { auth, firestore } from "../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "../firebase/firebase";
+//import { doc, getDoc } from "firebase/firestore";
 import useAuthStore from "../store/authStore";
+import axios from 'axios';
 
 const useLogin = () => {
 	const showToast = useShowToast();
-	const [signInWithEmailAndPassword, , loading, error] = useSignInWithEmailAndPassword(auth);
+	const [ , , loading, error] = useSignInWithEmailAndPassword(auth);
 	const loginUser = useAuthStore((state) => state.login);
 
 	const login = async (inputs) => {
-		if (!inputs.email || !inputs.password) {
+
+		if (!inputs.username || !inputs.password) {
 			return showToast("Error", "Please fill all the fields", "error");
 		}
 		try {
-			const userCred = await signInWithEmailAndPassword(inputs.email, inputs.password);
+			
+			const response = await axios.post('http://52.184.81.213:2163/api/auth/signin', {
+				...inputs
+			}).then((response) => {
+				return response;
+			}).catch((error) => {
+				return error;
+			});
 
-			if (userCred) {
-				const docRef = doc(firestore, "users", userCred.user.uid);
-				const docSnap = await getDoc(docRef);
-				localStorage.setItem("user-info", JSON.stringify(docSnap.data()));
-				loginUser(docSnap.data());
+			if (response.status == 200) {
+				
+				const data = response.data.data;
+				
+				localStorage.setItem("user-info", JSON.stringify(data));
+				loginUser(data);
 			}
+
 		} catch (error) {
 			showToast("Error", error.message, "error");
 		}
 	};
 
-	return { loading, error, login };
+	return {loading, error, login };
 };
 
 export default useLogin;

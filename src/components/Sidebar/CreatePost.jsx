@@ -34,6 +34,7 @@ import {
 } from "firebase/firestore";
 import { firestore, storage } from "../../firebase/firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import axios from "axios";
 
 const CreatePost = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
