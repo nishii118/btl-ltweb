@@ -14,16 +14,17 @@ const PageLayout = ({ children }) => {
 	const user = useAuthStore((state) => state.user);
 	const canRenderSidebar = pathname !== "/auth" && user;
 	const canRenderNavbar = !user && pathname !== "/auth";
-
+	console.log(user);
 
 	let checkingUserIsAuth = false;
 	if (!user && pathname !== "/auth") {
 		checkingUserIsAuth = true;
 	}
+	console.log(checkingUserIsAuth);
 	if (!user && pathname === "/") {
 		checkingUserIsAuth = false;
 	}
-
+	console.log(checkingUserIsAuth);
 	if (checkingUserIsAuth) return <PageLayoutSpinner />;
 
 	return (

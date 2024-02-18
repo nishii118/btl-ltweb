@@ -1,11 +1,11 @@
 
 import useShowToast from "./useShowToast";
 import axios  from 'axios';
-
+import useAuthStore from "../store/authStore";
 const useSignUpWithEmailAndPassword = () => {
 	
 	const showToast = useShowToast();
-
+	const loginUser = useAuthStore((state) => state.login);
 	const signup = async (inputs) => {
 		if (!inputs.email || !inputs.password || !inputs.username || !inputs.firstName || !inputs.lastName) {
 			showToast("Error", "Please fill all the fields", "error");
@@ -31,7 +31,19 @@ const useSignUpWithEmailAndPassword = () => {
 			return;
 		}
 
-
+		const userDoc = {
+			uid: newUser.user.uid,
+			email: inputs.email,
+			username: inputs.username,
+			fullName: inputs.fullName,
+			bio: "",
+			profilePicURL: "",
+			followers: [],
+			following: [],
+			posts: [],
+			createdAt: Date.now(),
+		};
+		loginUser(userDoc);
 		showToast("Success", "User created successfully", "success");
 
 		// try {
