@@ -15,7 +15,7 @@ const PageLayout = ({ children }) => {
 
 	const checkingUserIsAuth = !user && loading;
 	if (checkingUserIsAuth) return <PageLayoutSpinner />;
-
+	console.log(user);
 	return (
 		<Flex flexDir={canRenderNavbar ? "column" : "row"}>
 			{/* sidebar on the left */}
