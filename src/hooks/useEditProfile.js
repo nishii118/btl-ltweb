@@ -32,7 +32,6 @@ const useEditProfile = () => {
 				"about": inputs.about
 			};
 
-			console.log(updatedUser);
 
 			const response = await axios.put(`${url}/api/user/${authUser.user.id}`, updatedUser,{
 				headers: {

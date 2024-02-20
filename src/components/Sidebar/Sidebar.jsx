@@ -7,7 +7,7 @@ import useLogout from "../../hooks/useLogout";
 import SidebarItems from "./SidebarItems";
 
 const Sidebar = () => {
-	const { handleLogout, isLoggingOut } = useLogout();
+	const { handleLogout  } = useLogout();
 	return (
 		<Box
 			height={"100vh"}
@@ -66,7 +66,6 @@ const Sidebar = () => {
 							display={{ base: "none", md: "block" }}
 							variant={"ghost"}
 							_hover={{ bg: "transparent" }}
-							isLoading={isLoggingOut}
 						>
 							Logout
 						</Button>

@@ -33,7 +33,9 @@ const useFollowUser = (userId) => {
 
 			const data = response.data.filter((data) => data.senderId.id === userRefId || data.reciverId.id === userRefId);
 
-			const isFollowing = data[0].isFriend || 0;
+			// const isFollowing = data[0].isFriend || 0;
+
+			console.log(data);
 
 			// if (isFollowing) {
 			// 	// unfollow

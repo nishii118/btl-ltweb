@@ -4,13 +4,13 @@ import useShowToast from "./useShowToast";
 import useAuthStore from "../store/authStore";
 
 const useLogout = () => {
-	const [signOut, isLoggingOut, error] = useSignOut(auth);
+	// const [signOut, isLoggingOut, error] = useSignOut(auth);
 	const showToast = useShowToast();
 	const logoutUser = useAuthStore((state) => state.logout);
 
 	const handleLogout = async () => {
 		try {
-			await signOut();
+			// await signOut();
 			localStorage.removeItem("user-info");
 			logoutUser();
 		} catch (error) {
@@ -18,7 +18,7 @@ const useLogout = () => {
 		}
 	};
 
-	return { handleLogout, isLoggingOut, error };
+	return { handleLogout};
 };
 
 export default useLogout;

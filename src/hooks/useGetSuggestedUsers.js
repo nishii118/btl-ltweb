@@ -3,12 +3,15 @@ import useAuthStore from "../store/authStore";
 import useShowToast from "./useShowToast";
 import { collection, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 import { firestore } from "../firebase/firebase";
+import data from "../config.json";
+import axios from "axios";
 
 const useGetSuggestedUsers = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [suggestedUsers, setSuggestedUsers] = useState([]);
 	const authUser = useAuthStore((state) => state.user);
 	const showToast = useShowToast();
+	const url = data.url_base;
 
 	useEffect(() => {
 		const getSuggestedUsers = async () => {
