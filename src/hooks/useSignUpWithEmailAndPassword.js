@@ -1,6 +1,7 @@
 
 import useShowToast from "./useShowToast";
 import axios  from 'axios';
+import data from "../config.json";
 
 const useSignUpWithEmailAndPassword = () => {
 	
@@ -12,12 +13,9 @@ const useSignUpWithEmailAndPassword = () => {
 			return;
 		}
 
-		// const usersRef = collection(firestore, "users");
+		const url = data.url_base;
 
-		// const q = query(usersRef, where("username", "==", inputs.username));
-		// const querySnapshot = await getDocs(q);
-
-		const res = await axios.post("http://52.184.81.213:2163/api/auth/signup",
+		const res = await axios.post(`${url}/api/auth/signup`,
 		{
 			...inputs
 		}).then((res) => {
@@ -34,32 +32,7 @@ const useSignUpWithEmailAndPassword = () => {
 
 		showToast("Success", "User created successfully", "success");
 
-		// try {
-		// 	const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password);
-		// 	if (!newUser && error) {
-		// 		showToast("Error", error.message, "error");
-		// 		return;
-		// 	}
-		// 	if (newUser) {
-		// 		const userDoc = {
-		// 			uid: newUser.user.uid,
-		// 			email: inputs.email,
-		// 			username: inputs.username,
-		// 			fullName: inputs.fullName,
-		// 			bio: "",
-		// 			profilePicURL: "",
-		// 			followers: [],
-		// 			following: [],
-		// 			posts: [],
-		// 			createdAt: Date.now(),
-		// 		};
-		// 		await setDoc(doc(firestore, "users", newUser.user.uid), userDoc);
-		// 		localStorage.setItem("user-info", JSON.stringify(userDoc));
-		// 		loginUser(userDoc);
-		// 	}
-		// } catch (error) {
-		// 	showToast("Error", error.message, "error");
-		// }
+		
 	};
 
 	return { signup };

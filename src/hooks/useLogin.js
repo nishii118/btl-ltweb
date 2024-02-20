@@ -4,6 +4,7 @@ import { auth } from "../firebase/firebase";
 //import { doc, getDoc } from "firebase/firestore";
 import useAuthStore from "../store/authStore";
 import axios from 'axios';
+import data from '../config.json';
 
 const useLogin = () => {
 	const showToast = useShowToast();
@@ -16,8 +17,10 @@ const useLogin = () => {
 			return showToast("Error", "Please fill all the fields", "error");
 		}
 		try {
+
+			const url = data.url_base
 			
-			const response = await axios.post('http://52.184.81.213:2163/api/auth/signin', {
+			const response = await axios.post(`${url}/api/auth/signin`, {
 				...inputs
 			}).then((response) => {
 				return response;

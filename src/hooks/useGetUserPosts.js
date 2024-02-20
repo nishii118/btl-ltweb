@@ -4,12 +4,18 @@ import useShowToast from "./useShowToast";
 import useUserProfileStore from "../store/userProfileStore";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { firestore } from "../firebase/firebase";
+import data from "../config.json"
+import axios from 'axios';
+import useAuthStore from "../store/authStore";
 
 const useGetUserPosts = () => {
 	const [isLoading, setIsLoading] = useState(true);
 	const { posts, setPosts } = usePostStore();
 	const showToast = useShowToast();
 	const userProfile = useUserProfileStore((state) => state.userProfile);
+	const authUser = useAuthStore((state) => state.user);
+	const url = data.url_base;
+	const token = authUser.token;
 
 	useEffect(() => {
 		const getPosts = async () => {
@@ -18,15 +24,17 @@ const useGetUserPosts = () => {
 			setPosts([]);
 
 			try {
-				const q = query(collection(firestore, "posts"), where("createdBy", "==", userProfile.uid));
-				const querySnapshot = await getDocs(q);
+				
+				const userId = userProfile.id;
 
-				const posts = [];
-				querySnapshot.forEach((doc) => {
-					posts.push({ ...doc.data(), id: doc.id });
+				const response = await axios.get(`${url}/api/post/?id=${userId}`,{
+					headers: {
+                        Authorization: `Bearer ${token}`
+                    }
 				});
 
-				posts.sort((a, b) => b.createdAt - a.createdAt);
+				const posts = response.data.data;
+				posts.sort((a, b) => b.id - a.id);
 				setPosts(posts);
 			} catch (error) {
 				showToast("Error", error.message, "error");

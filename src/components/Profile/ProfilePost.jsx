@@ -28,6 +28,8 @@ import { firestore, storage } from "../../firebase/firebase";
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import usePostStore from "../../store/postStore";
 import Caption from "../Comment/Caption";
+import data from "../../config.json"
+import axios from 'axios';
 
 const ProfilePost = ({ post }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,19 +40,21 @@ const ProfilePost = ({ post }) => {
 	const deletePost = usePostStore((state) => state.deletePost);
 	const decrementPostsCount = useUserProfileStore((state) => state.deletePost);
 
+	const url = data.url_base;
+	const token = authUser.token;
+
+	const authId = authUser.user.id;
+
 	const handleDeletePost = async () => {
 		if (!window.confirm("Are you sure you want to delete this post?")) return;
 		if (isDeleting) return;
 
 		try {
-			const imageRef = ref(storage, `posts/${post.id}`);
-			await deleteObject(imageRef);
-			const userRef = doc(firestore, "users", authUser.uid);
-			await deleteDoc(doc(firestore, "posts", post.id));
-
-			await updateDoc(userRef, {
-				posts: arrayRemove(post.id),
-			});
+			const response = await axios.delete(`${url}/api/post/${post.id}`,{
+				headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
 			deletePost(post.id);
 			decrementPostsCount(post.id);
@@ -91,20 +95,20 @@ const ProfilePost = ({ post }) => {
 						<Flex>
 							<AiFillHeart size={20} />
 							<Text fontWeight={"bold"} ml={2}>
-								{post.likes.length}
+								{post.reactCount}
 							</Text>
 						</Flex>
 
-						<Flex>
+						{/* <Flex>
 							<FaComment size={20} />
 							<Text fontWeight={"bold"} ml={2}>
 								{post.comments.length}
 							</Text>
-						</Flex>
+						</Flex> */}
 					</Flex>
 				</Flex>
 
-				<Image src={post.imageURL} alt='profile post' w={"100%"} h={"100%"} objectFit={"cover"} />
+				<Image src={post.resource} alt='profile post' w={"100%"} h={"100%"} objectFit={"cover"} />
 			</GridItem>
 
 			<Modal isOpen={isOpen} onClose={onClose} isCentered={true} size={{ base: "3xl", md: "5xl" }}>
@@ -128,18 +132,18 @@ const ProfilePost = ({ post }) => {
 								justifyContent={"center"}
 								alignItems={"center"}
 							>
-								<Image src={post.imageURL} alt='profile post' />
+								<Image src={post.resource} alt='profile post' />
 							</Flex>
 							<Flex flex={1} flexDir={"column"} px={10} display={{ base: "none", md: "flex" }}>
 								<Flex alignItems={"center"} justifyContent={"space-between"}>
 									<Flex alignItems={"center"} gap={4}>
-										<Avatar src={userProfile.profilePicURL} size={"sm"} name='As a Programmer' />
+										<Avatar src={userProfile.avatarUrl} size={"sm"} name='As a Programmer' />
 										<Text fontWeight={"bold"} fontSize={12}>
 											{userProfile.username}
 										</Text>
 									</Flex>
 
-									{authUser?.uid === userProfile.uid && (
+									{authId == userProfile.id && (
 										<Button
 											size={"sm"}
 											bg={"transparent"}
@@ -157,11 +161,11 @@ const ProfilePost = ({ post }) => {
 
 								<VStack w='full' alignItems={"start"} maxH={"350px"} overflowY={"auto"}>
 									{/* CAPTION */}
-									{post.caption && <Caption post={post} />}
+									{post.content && <Caption post={post} />}
 									{/* COMMENTS */}
-									{post.comments.map((comment) => (
+									{/* {post.comments.map((comment) => (
 										<Comment key={comment.id} comment={comment} />
-									))}
+									))} */}
 								</VStack>
 								<Divider my={4} bg={"gray.8000"} />
 

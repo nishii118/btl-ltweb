@@ -3,7 +3,6 @@ import FeedPosts from "../../components/FeedPosts/FeedPosts";
 import SuggestedUsers from "../../components/SuggestedUsers/SuggestedUsers";
 
 const HomePage = () => {
-	console.log("Home")
 	return (
 		<Container maxW={"container.lg"}>
 			<Flex gap={20}>

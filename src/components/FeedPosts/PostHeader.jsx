@@ -4,14 +4,13 @@ import useFollowUser from "../../hooks/useFollowUser";
 import { timeAgo } from "../../utils/timeAgo";
 
 const PostHeader = ({ post, creatorProfile }) => {
-	const { handleFollowUser, isFollowing, isUpdating } = useFollowUser(post.createdBy);
 
 	return (
 		<Flex justifyContent={"space-between"} alignItems={"center"} w={"full"} my={2}>
 			<Flex alignItems={"center"} gap={2}>
 				{creatorProfile ? (
 					<Link to={`/${creatorProfile.username}`}>
-						<Avatar src={creatorProfile.profilePicURL} alt='user profile pic' size={"sm"} />
+						<Avatar src={creatorProfile.avatarUrl} alt='user profile pic' size={"sm"} />
 					</Link>
 				) : (
 					<SkeletonCircle size='10' />
@@ -24,10 +23,10 @@ const PostHeader = ({ post, creatorProfile }) => {
 						<Skeleton w={"100px"} h={"10px"} />
 					)}
 
-					<Box color={"gray.500"}>• {timeAgo(post.createdAt)}</Box>
+					{/* <Box color={"gray.500"}>• {timeAgo(post.createdAt)}</Box> */}
 				</Flex>
 			</Flex>
-			<Box cursor={"pointer"}>
+			{/* <Box cursor={"pointer"}>
 				<Button
 					size={"xs"}
 					bg={"transparent"}
@@ -38,12 +37,12 @@ const PostHeader = ({ post, creatorProfile }) => {
 						color: "white",
 					}}
 					transition={"0.2s ease-in-out"}
-					onClick={handleFollowUser}
-					isLoading={isUpdating}
+					//onClick={handleFollowUser}
+					//isLoading={isUpdating}
 				>
 					{isFollowing ? "Unfollow" : "Follow"}
 				</Button>
-			</Box>
+			</Box> */}
 		</Flex>
 	);
 };

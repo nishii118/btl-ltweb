@@ -32,12 +32,12 @@ const PostFooter = ({ post, isProfilePage, creatorProfile }) => {
 				</Box>
 			</Flex>
 			<Text fontWeight={600} fontSize={"sm"}>
-				{likes} likes
+				{likes || 0} likes
 			</Text>
 
 			{isProfilePage && (
 				<Text fontSize='12' color={"gray"}>
-					Posted {timeAgo(post.createdAt)}
+					Posted
 				</Text>
 			)}
 
@@ -46,14 +46,14 @@ const PostFooter = ({ post, isProfilePage, creatorProfile }) => {
 					<Text fontSize='sm' fontWeight={700}>
 						{creatorProfile?.username}{" "}
 						<Text as='span' fontWeight={400}>
-							{post.caption}
+							{post.content}
 						</Text>
 					</Text>
-					{post.comments.length > 0 && (
+					{/* {post.comments.length > 0 && (
 						<Text fontSize='sm' color={"gray"} cursor={"pointer"} onClick={onOpen}>
 							View all {post.comments.length} comments
 						</Text>
-					)}
+					)} */}
 					{/* COMMENTS MODAL ONLY IN THE HOME PAGE */}
 					{isOpen ? <CommentsModal isOpen={isOpen} onClose={onClose} post={post} /> : null}
 				</>

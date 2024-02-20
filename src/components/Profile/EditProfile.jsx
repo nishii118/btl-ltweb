@@ -22,21 +22,20 @@ import useEditProfile from "../../hooks/useEditProfile";
 import useShowToast from "../../hooks/useShowToast";
 
 const EditProfile = ({ isOpen, onClose }) => {
-	const [inputs, setInputs] = useState({
-		fullName: "",
-		username: "",
-		bio: "",
-	});
 	const authUser = useAuthStore((state) => state.user);
+	const [inputs, setInputs] = useState({
+		firstName: authUser.user.firstName,
+		lastName: authUser.user.lastName,
+		about: authUser.user.about,
+	});
 	const fileRef = useRef(null);
-	const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
+	//const { handleImageChange, selectedFile, setSelectedFile } = usePreviewImg();
 	const { isUpdating, editProfile } = useEditProfile();
 	const showToast = useShowToast();
 
 	const handleEditProfile = async () => {
 		try {
-			await editProfile(inputs, selectedFile);
-			setSelectedFile(null);
+			await editProfile(inputs);
 			onClose();
 		} catch (error) {
 			showToast("Error", error.message, "error");
@@ -62,38 +61,38 @@ const EditProfile = ({ isOpen, onClose }) => {
 										<Center>
 											<Avatar
 												size='xl'
-												src={selectedFile || authUser.profilePicURL}
+												src={authUser.user.avatarUrl}
 												border={"2px solid white "}
 											/>
 										</Center>
-										<Center w='full'>
+										{/* <Center w='full'>
 											<Button w='full' onClick={() => fileRef.current.click()}>
 												Edit Profile Picture
 											</Button>
-										</Center>
-										<Input type='file' hidden ref={fileRef} onChange={handleImageChange} />
+										</Center> */}
+										{/* <Input type='file' hidden ref={fileRef} onChange={handleImageChange} /> */}
 									</Stack>
 								</FormControl>
 
 								<FormControl>
-									<FormLabel fontSize={"sm"}>Full Name</FormLabel>
+									<FormLabel fontSize={"sm"}>First Name</FormLabel>
 									<Input
-										placeholder={"Full Name"}
+										placeholder={"First Name"}
 										size={"sm"}
 										type={"text"}
-										value={inputs.fullName || authUser.fullName}
-										onChange={(e) => setInputs({ ...inputs, fullName: e.target.value })}
+										value={inputs.firstName }
+										onChange={(e) => setInputs({ ...inputs, firstName: e.target.value })}
 									/>
 								</FormControl>
 
 								<FormControl>
-									<FormLabel fontSize={"sm"}>Username</FormLabel>
+									<FormLabel fontSize={"sm"}>Last Name</FormLabel>
 									<Input
-										placeholder={"Username"}
+										placeholder={"Last Name"}
 										size={"sm"}
 										type={"text"}
-										value={inputs.username || authUser.username}
-										onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
+										value={inputs.lastName }
+										onChange={(e) => setInputs({ ...inputs, lastName: e.target.value })}
 									/>
 								</FormControl>
 
@@ -103,8 +102,8 @@ const EditProfile = ({ isOpen, onClose }) => {
 										placeholder={"Bio"}
 										size={"sm"}
 										type={"text"}
-										value={inputs.bio || authUser.bio}
-										onChange={(e) => setInputs({ ...inputs, bio: e.target.value })}
+										value={inputs.about }
+										onChange={(e) => setInputs({ ...inputs, about: e.target.value })}
 									/>
 								</FormControl>
 

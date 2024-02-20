@@ -12,6 +12,7 @@ const PageLayout = ({ children }) => {
 	const { pathname } = useLocation();
 	//const [user, loading] = useAuthState(auth);
 	const user = useAuthStore((state) => state.user);
+	
 	const canRenderSidebar = pathname !== "/auth" && user;
 	const canRenderNavbar = !user && pathname !== "/auth";
 

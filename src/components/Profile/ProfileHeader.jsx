@@ -3,19 +3,21 @@ import useUserProfileStore from "../../store/userProfileStore";
 import useAuthStore from "../../store/authStore";
 import EditProfile from "./EditProfile";
 import useFollowUser from "../../hooks/useFollowUser";
+import useGetUserPosts from "../../hooks/useGetUserPosts";
 
 const ProfileHeader = () => {
 	const { userProfile } = useUserProfileStore();
 	const authUser = useAuthStore((state) => state.user);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const { isFollowing, isUpdating, handleFollowUser } = useFollowUser(userProfile?.uid);
-	const visitingOwnProfileAndAuth = authUser && authUser.username === userProfile.username;
-	const visitingAnotherProfileAndAuth = authUser && authUser.username !== userProfile.username;
+	const { isFollowing, isUpdating, handleFollowUser } = useFollowUser(userProfile?.id);
+	const visitingOwnProfileAndAuth = authUser.token && authUser.user.username === userProfile.username;
+	const visitingAnotherProfileAndAuth = authUser.token && authUser.user.username !== userProfile.username;
+	const { isLoading, posts } = useGetUserPosts();
 
 	return (
 		<Flex gap={{ base: 4, sm: 10 }} py={10} direction={{ base: "column", sm: "row" }}>
 			<AvatarGroup size={{ base: "xl", md: "2xl" }} justifySelf={"center"} alignSelf={"flex-start"} mx={"auto"}>
-				<Avatar src={userProfile.profilePicURL} alt='As a programmer logo' />
+				<Avatar src={userProfile.avatarUrl} alt='As a programmer logo' />
 			</AvatarGroup>
 
 			<VStack alignItems={"start"} gap={2} mx={"auto"} flex={1}>
@@ -59,29 +61,29 @@ const ProfileHeader = () => {
 				<Flex alignItems={"center"} gap={{ base: 2, sm: 4 }}>
 					<Text fontSize={{ base: "xs", md: "sm" }}>
 						<Text as='span' fontWeight={"bold"} mr={1}>
-							{userProfile.posts.length}
+							{ posts.length || 0 } 
 						</Text>
 						Posts
 					</Text>
 					<Text fontSize={{ base: "xs", md: "sm" }}>
 						<Text as='span' fontWeight={"bold"} mr={1}>
-							{userProfile.followers.length}
+							{userProfile.friendCount || 0}
 						</Text>
-						Followers
+						Friends
 					</Text>
-					<Text fontSize={{ base: "xs", md: "sm" }}>
+					{/* <Text fontSize={{ base: "xs", md: "sm" }}>
 						<Text as='span' fontWeight={"bold"} mr={1}>
 							{userProfile.following.length}
 						</Text>
 						Following
-					</Text>
-				</Flex>
+					</Text> */}
+				</Flex> 
 				<Flex alignItems={"center"} gap={4}>
 					<Text fontSize={"sm"} fontWeight={"bold"}>
-						{userProfile.fullName}
+						{`${userProfile.firstName} ${userProfile.lastName}`}
 					</Text>
 				</Flex>
-				<Text fontSize={"sm"}>{userProfile.bio}</Text>
+				<Text fontSize={"sm"}>{userProfile.about}</Text>
 			</VStack>
 			{isOpen && <EditProfile isOpen={isOpen} onClose={onClose} />}
 		</Flex>
