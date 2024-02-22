@@ -15,59 +15,116 @@ const useFollowUser = (userId) => {
 	const { userProfile, setUserProfile } = useUserProfileStore();
 	const showToast = useShowToast();
 
+	const url = data.url_base;
+
+	const token = authUser.token;
+
+	const userRefId = authUser.user.id;
+
+
 	const handleFollowUser = async () => {
 		setIsUpdating(true);
 		try {
 			
-			const url = data.url_base;
-
-			const token = authUser.token;
-
-			const userRefId = authUser.user.id;
-
-			const response = await axios.post(`${url}/api/friend/${userId}`, {
-                Headers: {
-					Authorization: `Bearer ${token}`,
-				}
+			const response = await axios.get(`${url}/api/friend/${userRefId}`, {
+                headers: {
+					Authorization: `Bearer ${token}`
+    			}
             }).then((response) => response.data);
 
-			const data = response.data.filter((data) => data.senderId.id === userRefId || data.reciverId.id === userRefId);
+			const data =  await response.data;
 
-			// const isFollowing = data[0].isFriend || 0;
+			let isFollowing = await data.length > 0 ? data[0].isFriend : 0;
 
-			console.log(data);
+			let isAccepted = 0;
 
-			// if (isFollowing) {
-			// 	// unfollow
-			// 	setAuthUser({
-			// 		...authUser,
-			// 		following: authUser.following.filter((uid) => uid !== userId),
-			// 	});
+			await data.forEach(element => {
+				if (element.senderId.id === userRefId && element.receiverId.id === userId) {
+					isFollowing = 1;
+					isAccepted = 1;
+				}
+			});
 
-			// 	localStorage.setItem(
-			// 		"user-info",
-			// 		JSON.stringify({
-			// 			...authUser,
-			// 			following: authUser.following.filter((uid) => uid !== userId),
-			// 		})
-			// 	);
-			// 	setIsFollowing(false);
-			// } else {
-			// 	// follow
-			// 	setAuthUser({
-			// 		...authUser,
-			// 		following: [...authUser.following, userId],
-			// 	});
 
-			// 	localStorage.setItem(
-			// 		"user-info",
-			// 		JSON.stringify({
-			// 			...authUser,
-			// 			following: [...authUser.following, userId],
-			// 		})
-			// 	);
-			// 	setIsFollowing(true);
-			// }
+			if (isFollowing) {
+				// unfollow
+				
+				const body = {
+					...data[0],
+					isFriend: 0,
+				}
+
+				const response = await axios.put(`${url}/api/friend/`, body, {
+					headers: {
+                        Authorization: `Bearer ${token}`,
+						'Access-Control-Allow-Origin': '*'
+                    }
+				})
+
+				setAuthUser({
+					...authUser,
+					following: authUser.following.filter((id) => id != userId),
+				});
+
+				localStorage.setItem(
+					"user-info",
+					JSON.stringify({
+						...authUser,
+						following: authUser.following.filter((id) => id != userId),
+					})
+				);
+				setIsFollowing(false);
+			} else {
+				// follow
+
+				if (isAccepted) {
+
+					const body = {
+						...data[0],
+						isFriend: 1,
+					}
+	
+					const response = await axios.put(`${url}/api/friend/`, body, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+							'Access-Control-Allow-Origin': '*'
+						}
+					})
+	
+					setIsFollowing(true);
+
+				}else{
+
+					const body = {
+						senderId: userRefId,
+						receiverId: userId,
+						isFriend: 1,
+					}
+	
+					const response = await axios.post(`${url}/api/friend/`, body, {
+						headers: {
+							Authorization: `Bearer ${token}`,
+							'Access-Control-Allow-Origin': '*'
+						}
+					})
+	
+					setIsFollowing(true);
+					
+					setAuthUser({
+						...authUser,
+						following: [...authUser.following, userId],
+					});
+	
+					localStorage.setItem(
+						"user-info",
+						JSON.stringify({
+							...authUser,
+							following: [...authUser.following, userId],
+						})
+					);
+				
+				}
+			}
 		} catch (error) {
 			showToast("Error", error.message, "error");
 		} finally {
@@ -77,7 +134,7 @@ const useFollowUser = (userId) => {
 
 	useEffect(() => {
 		if (authUser) {
-			// const isFollowing = authUser.following.includes(userId);
+			const isFollowing = authUser.following.includes(userId) ?  1 : 0;
 			setIsFollowing(isFollowing);
 		}
 	}, [authUser, userId]);

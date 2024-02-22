@@ -108,7 +108,7 @@ const ProfilePost = ({ post }) => {
 					</Flex>
 				</Flex>
 
-				<Image src={post.resource} alt='profile post' w={"100%"} h={"100%"} objectFit={"cover"} />
+				<Image src={post.resources} alt='profile post' w={"100%"} h={"100%"} objectFit={"cover"} />
 			</GridItem>
 
 			<Modal isOpen={isOpen} onClose={onClose} isCentered={true} size={{ base: "3xl", md: "5xl" }}>
@@ -132,7 +132,7 @@ const ProfilePost = ({ post }) => {
 								justifyContent={"center"}
 								alignItems={"center"}
 							>
-								<Image src={post.resource} alt='profile post' />
+								<Image src={post.resources} alt='profile post' />
 							</Flex>
 							<Flex flex={1} flexDir={"column"} px={10} display={{ base: "none", md: "flex" }}>
 								<Flex alignItems={"center"} justifyContent={"space-between"}>

@@ -59,6 +59,7 @@ const Sidebar = () => {
 						p={2}
 						w={{ base: 10, md: "full" }}
 						mt={"auto"}
+						Link={"/auth"}
 						justifyContent={{ base: "center", md: "flex-start" }}
 					>
 						<BiLogOut size={25} />

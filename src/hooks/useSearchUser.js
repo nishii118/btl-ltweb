@@ -27,10 +27,10 @@ const useSearchUser = () => {
           },
         }
       );
-      if (response.status != 200) 
+      if (response.status != 200)
         return showToast("Error", "User not found", "error");
 
-		setUser(response.data.data);
+      setUser(response.data.data);
     } catch (error) {
       showToast("Error", error.message, "error");
       setUser(null);

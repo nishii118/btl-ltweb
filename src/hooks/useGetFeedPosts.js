@@ -19,7 +19,7 @@ const useGetFeedPosts = () => {
 	useEffect(() => {
 		const getFeedPosts = async () => {
 			setIsLoading(true);
-			if (authUser.user.friendCount === 0) {
+			if (authUser.user.friendCount == 0) {
 				setIsLoading(false);
 				setPosts([]);
 				return;
@@ -31,8 +31,9 @@ const useGetFeedPosts = () => {
                     }
 				});
 
-				let friendIds = res1.data.data.map((friend) => friend.reciverId.id);
-				friendIds.push(authUser.user.id);
+
+				let friendIds = await res1.data.data.map((friend) => friend.receiverId.id);
+				await friendIds.push(authUser.user.id);
 
 				const res2 = await axios.get(`${url}/api/post/all`, {
 					headers: {
@@ -40,11 +41,11 @@ const useGetFeedPosts = () => {
                     }
                 });
 
-				const fposts = res2.data.data.filter(post => {
+				let fposts = res2.data.data.filter(post => {
 					return friendIds.includes(post.userId);
 				});
 
-				fposts.sort((a, b) => b.id - a.id);
+
 				setPosts(fposts);
 			} catch (error) {
 				showToast("Error", error.message, "error");

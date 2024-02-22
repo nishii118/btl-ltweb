@@ -16,7 +16,7 @@ const SuggestedUsers = () => {
 			{suggestedUsers.length !== 0 && (
 				<Flex alignItems={"center"} justifyContent={"space-between"} w={"full"}>
 					<Text fontSize={12} fontWeight={"bold"} color={"gray.500"}>
-						Suggested for you
+						Friend
 					</Text>
 					<Text fontSize={12} fontWeight={"bold"} _hover={{ color: "gray.400" }} cursor={"pointer"}>
 						See All
@@ -25,15 +25,9 @@ const SuggestedUsers = () => {
 			)}
 
 			{suggestedUsers.map((user) => (
-				<SuggestedUser user={user} key={user.id} />
+				<SuggestedUser user={user.receiverId} key={user.receiverId.id} />
 			))}
-
-			<Box fontSize={12} color={"gray.500"} mt={5} alignSelf={"start"}>
-				© 2023 Built By{" "}
-				<Link href='https://www.youtube.com/@asaprogrammer_' target='_blank' color='blue.500' fontSize={14}>
-					As a Programmer
-				</Link>
-			</Box>
+			
 		</VStack>
 	);
 };

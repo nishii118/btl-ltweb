@@ -9,7 +9,7 @@ const Caption = ({ post }) => {
 	return (
 		<Flex gap={4}>
 			<Link to={`/${userProfile.username}`}>
-				<Avatar src={userProfile.profilePicURL} size={"sm"} />
+				<Avatar src={userProfile.avatarUrl} size={"sm"} />
 			</Link>
 			<Flex direction={"column"}>
 				<Flex gap={2} alignItems={"center"}>
@@ -18,11 +18,11 @@ const Caption = ({ post }) => {
 							{userProfile.username}
 						</Text>
 					</Link>
-					<Text fontSize={14}>{post.caption}</Text>
+					<Text fontSize={14}>{post.content}</Text>
 				</Flex>
-				<Text fontSize={12} color={"gray"}>
+				{/* <Text fontSize={12} color={"gray"}>
 					{timeAgo(post.createdAt)}
-				</Text>
+				</Text> */}
 			</Flex>
 		</Flex>
 	);

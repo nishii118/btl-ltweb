@@ -4,6 +4,8 @@ import useAuthStore from "../store/authStore";
 import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { firestore } from "../firebase/firebase";
 import usePostStore from "../store/postStore";
+import data from "../config.json";
+import axios from "axios";
 
 const usePostComment = () => {
 	const [isCommenting, setIsCommenting] = useState(false);
@@ -12,19 +14,27 @@ const usePostComment = () => {
 	const addComment = usePostStore((state) => state.addComment);
 
 	const handlePostComment = async (postId, comment) => {
-		if (isCommenting) return;
+		
 		if (!authUser) return showToast("Error", "You must be logged in to comment", "error");
 		setIsCommenting(true);
 		const newComment = {
-			comment,
+			userId: authUser.user.id,
+			postId: postId,
 			createdAt: Date.now(),
-			createdBy: authUser.uid,
-			postId,
+			reactCount: 0,
+			isRoot: 0,
+			parentId: 0,
+			resources: "",
+			content: comment
+			
 		};
 		try {
-			await updateDoc(doc(firestore, "posts", postId), {
-				comments: arrayUnion(newComment),
+			const response = await axios.post(`${data.url_base}/api/comments/`, newComment , {
+				headers: {
+					Authorization: `Bearer ${authUser.token}`,
+                }
 			});
+
 			addComment(postId, newComment);
 		} catch (error) {
 			showToast("Error", error.message, "error");

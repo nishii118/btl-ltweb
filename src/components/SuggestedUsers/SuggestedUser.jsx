@@ -7,32 +7,26 @@ const SuggestedUser = ({ user, setUser }) => {
 	const { isFollowing, isUpdating, handleFollowUser } = useFollowUser(user.id);
 	const authUser = useAuthStore((state) => state.user);
 
+	const reUser = user;
+
+
 	const onFollowUser = async () => {
-		// await handleFollowUser();
-		// setUser({
-		// 	...user,
-		// 	// followers: isFollowing
-		// 	// 	? user.followers.filter((follower) => follower.uid !== authUser.uid)
-		// 	// 	: [...user.followers, authUser],
-		// });
-		console.log("check")
+		await handleFollowUser();
 	};
 
 	return (
 		<Flex justifyContent={"space-between"} alignItems={"center"} w={"full"}>
 			<Flex alignItems={"center"} gap={2}>
-				<Link to={`/${user.username}`}>
-					<Avatar src={user.avatarUrl} size={"md"} />
+				<Link to={`/${reUser.username}`}>
+					<Avatar src={reUser.avatarUrl} size={"md"} />
 				</Link>
 				<VStack spacing={2} alignItems={"flex-start"}>
-					<Link to={`/${user.username}`}>
+					<Link to={`/${reUser.username}`}>
 						<Box fontSize={12} fontWeight={"bold"}>
-							{`${user.firstName} ${user.lastName}`}
+							{`${reUser.firstName} ${reUser.lastName}`}
 						</Box>
 					</Link>
-					{/* <Box fontSize={11} color={"gray.500"}>
-						{user.followers.length} followers
-					</Box> */}
+				
 				</VStack>
 			</Flex>
 			{authUser.user.id !== user.id && (

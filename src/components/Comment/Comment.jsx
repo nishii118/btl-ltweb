@@ -4,13 +4,16 @@ import { Link } from "react-router-dom";
 import { timeAgo } from "../../utils/timeAgo";
 
 const Comment = ({ comment }) => {
-	const { userProfile, isLoading } = useGetUserProfileById(comment.createdBy);
+	const { userProfile, isLoading } = useGetUserProfileById(comment.user.id);
+
+	console.log(comment)
 
 	if (isLoading) return <CommentSkeleton />;
+
 	return (
 		<Flex gap={4}>
 			<Link to={`/${userProfile.username}`}>
-				<Avatar src={userProfile.profilePicURL} size={"sm"} />
+				<Avatar src={userProfile.avatarUrl} size={"sm"} />
 			</Link>
 			<Flex direction={"column"}>
 				<Flex gap={2} alignItems={"center"}>
@@ -19,10 +22,10 @@ const Comment = ({ comment }) => {
 							{userProfile.username}
 						</Text>
 					</Link>
-					<Text fontSize={14}>{comment.comment}</Text>
+					<Text fontSize={14}>{comment.content || ""}</Text>
 				</Flex>
 				<Text fontSize={12} color={"gray"}>
-					{timeAgo(comment.createdAt)}
+					{timeAgo(new Date(comment.createdAt))}
 				</Text>
 			</Flex>
 		</Flex>

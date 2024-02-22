@@ -35,6 +35,7 @@ import {
 import { firestore, storage } from "../../firebase/firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import axios from "axios";
+import data from "../../config.json";
 
 const CreatePost = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -155,59 +156,39 @@ function useCreatePost() {
     if (isLoading) return;
     if (!selectedFile) throw new Error("Please select an image");
     setIsLoading(true);
-    const newPost = {
-      caption: caption,
-      likes: [],
-      comments: [],
-      createdAt: Date.now(),
-      createdBy: 1,
-    };
-		console.log('post');
-    const newPost1 = new FormData();
-		// const file = selectedFile.
-		console.log(typeof(selectedFile));
-    // newPost1.append("file", selectedFile, selectedFile);
-    // newPost1.append("content", caption);
-		// console.log('Post'); // print 
-    // try {
-		// 	const response = await axios.post(
-		// 		"http://52.184.81.213:2163/api/post/create", // Added http:// before the URL
-		// 		newPostData,
-		// 		{
-		// 			headers: {
-		// 				"Content-Type": "multipart/form-data",
-		// 			},
-		// 		}
-		// 	);
-		// 	console.log('Response: ', response.data);
-		// } catch (error) {
-		// 	console.log('Error ', error);
-		// } finally {
-		// 	setIsLoading(false);
-		// }
 
+    const newPost = new FormData();
+
+    var arr = selectedFile.split(","),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    const blob = new Blob([u8arr], { type: mime });
+
+    const file = new File([blob], `test.png`, { type: mime });
+
+    newPost.append("file", file);
+    newPost.append("content", caption);
+    const url = data.url_base;
     try {
-      const postDocRef = await addDoc(collection(firestore, "posts"), newPost);
-      const userDocRef = doc(firestore, "users", authUser.uid);
-      const imageRef = ref(storage, `posts/${postDocRef.id}`);
-
-      await updateDoc(userDocRef, { posts: arrayUnion(postDocRef.id) });
-      await uploadString(imageRef, selectedFile, "data_url");
-      const downloadURL = await getDownloadURL(imageRef);
-
-      await updateDoc(postDocRef, { imageURL: downloadURL });
-
-      newPost.imageURL = downloadURL;
-
-      if (userProfile.uid === authUser.uid)
-        createPost({ ...newPost, id: postDocRef.id });
-
-      if (pathname !== "/" && userProfile.uid === authUser.uid)
-        addPost({ ...newPost, id: postDocRef.id });
-
-      showToast("Success", "Post created successfully", "success");
+      const response = await axios.post(
+        `${url}/api/post/create`, // Added http:// before the URL
+        newPost,
+        {
+          headers: {
+            Authorization: `Bearer ${authUser.token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log("Response: ", response.data);
+      window.location.reload();
     } catch (error) {
-      showToast("Error", error.message, "error");
+      console.log("Error ", error);
     } finally {
       setIsLoading(false);
     }
@@ -215,3 +196,4 @@ function useCreatePost() {
 
   return { isLoading, handleCreatePost };
 }
+

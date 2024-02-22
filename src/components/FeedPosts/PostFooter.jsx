@@ -49,11 +49,11 @@ const PostFooter = ({ post, isProfilePage, creatorProfile }) => {
 							{post.content}
 						</Text>
 					</Text>
-					{/* {post.comments.length > 0 && (
+					
 						<Text fontSize='sm' color={"gray"} cursor={"pointer"} onClick={onOpen}>
-							View all {post.comments.length} comments
+							View all comments
 						</Text>
-					)} */}
+					
 					{/* COMMENTS MODAL ONLY IN THE HOME PAGE */}
 					{isOpen ? <CommentsModal isOpen={isOpen} onClose={onClose} post={post} /> : null}
 				</>

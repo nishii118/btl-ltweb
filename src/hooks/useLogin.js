@@ -10,6 +10,7 @@ const useLogin = () => {
 	const showToast = useShowToast();
 	const [ , , loading, error] = useSignInWithEmailAndPassword(auth);
 	const loginUser = useAuthStore((state) => state.login);
+	const url = data.url_base
 
 	const login = async (inputs) => {
 
@@ -18,7 +19,6 @@ const useLogin = () => {
 		}
 		try {
 
-			const url = data.url_base
 			
 			const response = await axios.post(`${url}/api/auth/signin`, {
 				...inputs
@@ -27,13 +27,26 @@ const useLogin = () => {
 			}).catch((error) => {
 				return error;
 			});
+			
+			const data =  await response.data.data;
+
+			const response1 = await axios.get(`${url}/api/friend/${data.user.id}`, {
+                headers: {
+					Authorization: `Bearer ${data.token}`
+    			}
+            }).then((response) => response.data);
+
+			const friends = await response1.data.map((data) => data.receiverId.id);
 
 			if (response.status == 200) {
 				
-				const data = response.data.data;
+				const n_data = {
+					...response.data.data,
+					following : [...friends]
+				};
 				
-				localStorage.setItem("user-info", JSON.stringify(data));
-				loginUser(data);
+				localStorage.setItem("user-info", JSON.stringify(n_data));
+				loginUser(n_data);
 			}
 
 		} catch (error) {
